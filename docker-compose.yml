@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./docker/backend
+    container_name: backend
+    tty: true
+    working_dir: /srv
+    volumes:
+      - ./backend:/srv:cached
+    ports:
+      - 8080:8080
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    depends_on:
+      - db
+  frontend:
+    build: ./docker/frontend
+    container_name: frontend
+    tty: true
+    working_dir: /srv
+    volumes:
+      - ./frontend:/srv:cached
+    ports:
+      - 3000:3000
+      - 1234:1234
+      - 5173:5173
+      - 6006:6006
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  adminer:
+    image: adminer:4.8.1
+    container_name: adminer
+    ports:
+      - "9000:8080"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0.32
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: demo
+      TZ: "Asia/Tokyo"
+    ports:
+      - "3306:3306"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - dbvol:/var/lib/mysql
+      - ./conf/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./script:/docker-entrypoint-initdb.d
+
+volumes:
+  dbvol:
