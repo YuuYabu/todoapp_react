@@ -180,6 +180,7 @@ function App() {
                   e.preventDefault();
                   console.log(todo);
                 }}
+                disabled={todo.deletedAt !== null}
               >
                 更新
               </Button>
@@ -195,6 +196,7 @@ function App() {
                   );
                   setTodoList(tList);
                 }}
+                disabled={todo.deletedAt !== null}
               >
                 {getStatusName(todo)}
               </Button>
@@ -203,6 +205,7 @@ function App() {
               <Button
                 variant="danger"
                 onClick={(e) => handleDeleteTodo(e, todo)}
+                disabled={todo.deletedAt !== null}
               >
                 削除
               </Button>
