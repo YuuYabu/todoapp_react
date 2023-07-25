@@ -16,7 +16,7 @@ const getTodayString = (): string => {
     today.getDate().toString()
   );
 };
-type Todo = {
+export type Todo = {
   id: number;
   title: string;
   currentStatus: number;
@@ -94,6 +94,12 @@ function App() {
     setTodoList([...todoList]);
     setNewTodo(emptyTodo);
   };
+  const handleDeleteTodo = (e: any, todo: Todo) => {
+    e.preventDefault();
+    todo.deletedAt = getTodayString();
+    const tList = todoList.map((t) => (t.id === todo.id ? todo : t));
+    setTodoList(tList);
+  };
   registerLocale("ja", ja);
 
   return (
@@ -101,7 +107,7 @@ function App() {
       <h1>Todo</h1>
       <h2>New Todo</h2>
       <form className="row" onSubmit={handleSubmitNewTodo}>
-        <div className="col-4">
+        <div className="col-3">
           <input
             type="text"
             className="form-control"
@@ -111,12 +117,13 @@ function App() {
             required={true}
           />
         </div>
-        <div className="col-4">
+        <div className="col-3">
           <DatePicker
             onChange={handleChangeNewTodoEndAt}
             dateFormat="yyyy/MM/dd"
             selected={new Date()}
             minDate={new Date()}
+            isClearable={false}
             locale="ja"
             className="form-control"
           />
@@ -131,7 +138,7 @@ function App() {
       {todoList.map((todo) => {
         return (
           <form className="row" key={todo.id}>
-            <div className="col-4">
+            <div className="col-3">
               <input
                 type="text"
                 className="form-control"
@@ -141,9 +148,10 @@ function App() {
                     todo.currentStatus === 2 ? "line-through" : "",
                 }}
                 readOnly={todo.currentStatus === 2}
+                disabled={todo.deletedAt !== null}
               />
             </div>
-            <div className="col-4">
+            <div className="col-3">
               {/* <input
                 type="date"
                 className="form-control"
@@ -160,6 +168,9 @@ function App() {
                   todo.endAt =
                     selectedDate?.toDateString() || new Date().toDateString();
                 }}
+                readOnly={todo.currentStatus === 2}
+                isClearable={false}
+                disabled={todo.deletedAt !== null}
               />
             </div>
             <div className="col-2">
@@ -186,6 +197,14 @@ function App() {
                 }}
               >
                 {getStatusName(todo)}
+              </Button>
+            </div>
+            <div className="col-2">
+              <Button
+                variant="danger"
+                onClick={(e) => handleDeleteTodo(e, todo)}
+              >
+                削除
               </Button>
             </div>
           </form>
