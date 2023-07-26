@@ -37,7 +37,24 @@ export const emptyTodo: TodoType = {
 
 function App() {
   const [todoList, setTodoList] = useState<TodoType[]>([]);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    fetchTodoList();
+  }, []);
+
+  const fetchTodoList = async () => {
+    const url = "http://localhost:8080/api/todo";
+    const res: Response = await fetch(url, { method: "GET" });
+    if (res.ok) {
+      const data = (await res.json()) as TodoType[];
+      data.map((todo) => {
+        todo.endAt = formattedDate(new Date(todo.endAt));
+      });
+      setTodoList(data);
+      console.log("Fetched Todo List");
+    } else {
+      console.error("Unable to fetch todo list");
+    }
+  };
 
   const addTodo = (todo: TodoType) => {
     let maxId: number = 0;
