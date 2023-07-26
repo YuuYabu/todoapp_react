@@ -34,33 +34,11 @@ export const emptyTodo: TodoType = {
   endAt: getTodayString(),
   deletedAt: null,
 };
-const todo1: TodoType = {
-  id: 1,
-  title: "Test1",
-  currentStatus: 0,
-  endAt: "2023/07/25",
-  deletedAt: null,
-};
-const todo2: TodoType = {
-  id: 2,
-  title: "Test2",
-  currentStatus: 0,
-  endAt: "2023/07/30",
-  deletedAt: "2023/07/20",
-};
-const todo3: TodoType = {
-  id: 3,
-  title: "Test3",
-  currentStatus: 0,
-  endAt: "2023/07/23",
-  deletedAt: null,
-};
 
 function App() {
   const [todoList, setTodoList] = useState<TodoType[]>([]);
-  useEffect(() => {
-    setTodoList([todo1, todo2, todo3]);
-  }, []);
+  useEffect(() => {}, []);
+
   const addTodo = (todo: TodoType) => {
     let maxId: number = 0;
     todoList.forEach((todo: TodoType) => {
@@ -71,6 +49,7 @@ function App() {
     todoList.push(Object.assign({}, todo, { id: maxId + 1 }));
     setTodoList([...todoList]);
   };
+
   const updateTodo = (todo: TodoType) => {
     const tList = todoList.map((t) => (t.id === todo.id ? todo : t));
     setTodoList(tList);
