@@ -35,6 +35,8 @@ export const emptyTodo: TodoType = {
   deletedAt: null,
 };
 
+const url = "http://localhost:8080/api/todo";
+
 function App() {
   const [todoList, setTodoList] = useState<TodoType[]>([]);
   useEffect(() => {
@@ -42,7 +44,6 @@ function App() {
   }, []);
 
   const fetchTodoList = async () => {
-    const url = "http://localhost:8080/api/todo";
     const res: Response = await fetch(url, { method: "GET" });
     if (res.ok) {
       const data = (await res.json()) as TodoType[];
