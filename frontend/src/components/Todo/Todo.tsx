@@ -37,7 +37,7 @@ const Todo: React.FC<Props> = (props) => {
   };
   const handleUpdateButton = (e: any) => {
     e.preventDefault();
-    console.log(todo);
+    props.updateTodo(todo);
   };
   const handleProcessButton = (e: any) => {
     e.preventDefault();

@@ -22,6 +22,19 @@ export const formattedDate = (date: Date): string => {
   );
 };
 
+const formattedJsonDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  const ms = String(date.getMilliseconds()).padStart(3, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${ms}Z`;
+};
+
 export const getTodayString = (): string => {
   let today = new Date();
   return formattedDate(today);
@@ -58,7 +71,8 @@ function App() {
   };
 
   const addTodo = async (todo: TodoType) => {
-    todo.endAt = new Date(todo.endAt).toISOString();
+    todo.endAt = formattedJsonDate(todo.endAt);
+
     await fetch(url + "/new", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -67,9 +81,18 @@ function App() {
     fetchTodoList();
   };
 
-  const updateTodo = (todo: TodoType) => {
-    const tList = todoList.map((t) => (t.id === todo.id ? todo : t));
-    setTodoList(tList);
+  const updateTodo = async (target: TodoType) => {
+    const todo: TodoType = {
+      ...target,
+      endAt: formattedJsonDate(target.endAt),
+    };
+    console.log(todo.endAt);
+    await fetch(url + `/${todo.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    });
+    fetchTodoList();
   };
 
   return (
