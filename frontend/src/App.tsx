@@ -57,15 +57,14 @@ function App() {
     }
   };
 
-  const addTodo = (todo: TodoType) => {
-    let maxId: number = 0;
-    todoList.forEach((todo: TodoType) => {
-      if (!maxId || todo.id > maxId) {
-        maxId = todo.id;
-      }
+  const addTodo = async (todo: TodoType) => {
+    todo.endAt = new Date(todo.endAt).toISOString();
+    await fetch(url + "/new", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
     });
-    todoList.push(Object.assign({}, todo, { id: maxId + 1 }));
-    setTodoList([...todoList]);
+    fetchTodoList();
   };
 
   const updateTodo = (todo: TodoType) => {
