@@ -3,6 +3,7 @@ package com.todo.app.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,5 +38,10 @@ public class TodoController {
     @PutMapping("/todo/{id}")
     public void updateTodo(@RequestBody Todo newTodo, @PathVariable Integer id) {
         this.todoService.updateTodo(newTodo, id);
+    }
+
+    @DeleteMapping("/todo/{id}")
+    public void deleteTodo(@PathVariable Integer id) {
+        this.todoService.deleteTodo(id);
     }
 }
