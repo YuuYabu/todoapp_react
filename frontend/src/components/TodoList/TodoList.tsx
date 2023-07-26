@@ -5,6 +5,7 @@ import Todo from "../Todo/Todo";
 interface Props {
   todoList: TodoType[];
   updateTodo: Function;
+  progressTodo: Function;
 }
 
 const TodoList: React.FC<Props> = (props) => {
@@ -16,7 +17,11 @@ const TodoList: React.FC<Props> = (props) => {
         {todoList.map((todo) => {
           return (
             <li className="list-group-item" key={todo.id}>
-              <Todo todo={todo} updateTodo={props.updateTodo} />
+              <Todo
+                todo={todo}
+                updateTodo={props.updateTodo}
+                progressTodo={props.progressTodo}
+              />
             </li>
           );
         })}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Button } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
@@ -8,6 +8,7 @@ import { TodoType, formattedDate, getTodayString } from "../../App";
 interface Props {
   todo: TodoType;
   updateTodo: Function;
+  progressTodo: Function;
 }
 
 const statusNameList: { [key: number]: string } = {
@@ -39,10 +40,12 @@ const Todo: React.FC<Props> = (props) => {
     e.preventDefault();
     props.updateTodo(todo);
   };
-  const handleProcessButton = (e: any) => {
+  const handleProcessButton = async (e: any) => {
     e.preventDefault();
+    props.progressTodo(todo);
     setTodo({ ...todo, currentStatus: Math.min(todo.currentStatus + 1, 2) });
   };
+
   const handleDeleteTodo = (e: any) => {
     e.preventDefault();
     setTodo({ ...todo, deletedAt: getTodayString() });
@@ -92,7 +95,7 @@ const Todo: React.FC<Props> = (props) => {
           <Button
             variant={getButtonClass(todo)}
             onClick={handleProcessButton}
-            disabled={todo.deletedAt !== null}
+            disabled={todo.deletedAt !== null || todo.currentStatus === 2}
           >
             {getStatusName(todo)}
           </Button>

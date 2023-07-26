@@ -86,7 +86,21 @@ function App() {
       ...target,
       endAt: formattedJsonDate(target.endAt),
     };
-    console.log(todo.endAt);
+    await fetch(url + `/${todo.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    });
+    fetchTodoList();
+  };
+
+  const progressTodo = async (target: TodoType) => {
+    const todo: TodoType = {
+      ...target,
+      endAt: formattedJsonDate(target.endAt),
+      currentStatus: Math.min(target.currentStatus + 1, 2),
+    };
+    console.log(todo);
     await fetch(url + `/${todo.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -97,7 +111,12 @@ function App() {
 
   return (
     <>
-      <Home todoList={todoList} addTodo={addTodo} updateTodo={updateTodo} />
+      <Home
+        todoList={todoList}
+        addTodo={addTodo}
+        updateTodo={updateTodo}
+        progressTodo={progressTodo}
+      />
     </>
   );
 }
