@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
@@ -9,6 +9,7 @@ interface Props {
   todo: TodoType;
   updateTodo: Function;
   progressTodo: Function;
+  deleteTodo: Function;
 }
 
 const statusNameList: { [key: number]: string } = {
@@ -48,6 +49,7 @@ const Todo: React.FC<Props> = (props) => {
 
   const handleDeleteTodo = (e: any) => {
     e.preventDefault();
+    props.deleteTodo(todo);
     setTodo({ ...todo, deletedAt: getTodayString() });
   };
   registerLocale("ja", ja);

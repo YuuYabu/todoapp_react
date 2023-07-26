@@ -8,6 +8,7 @@ interface Props {
   addTodo: Function;
   updateTodo: Function;
   progressTodo: Function;
+  deleteTodo: Function;
 }
 
 const Home: React.FC<Props> = (props) => {
@@ -20,6 +21,7 @@ const Home: React.FC<Props> = (props) => {
         todoList={todoList}
         updateTodo={props.updateTodo}
         progressTodo={props.progressTodo}
+        deleteTodo={props.deleteTodo}
       />
     </>
   );

@@ -109,6 +109,11 @@ function App() {
     fetchTodoList();
   };
 
+  const deleteTodo = async (target: TodoType) => {
+    await fetch(url + `/${target.id}`, { method: "DELETE" });
+    fetchTodoList();
+  };
+
   return (
     <>
       <Home
@@ -116,6 +121,7 @@ function App() {
         addTodo={addTodo}
         updateTodo={updateTodo}
         progressTodo={progressTodo}
+        deleteTodo={deleteTodo}
       />
     </>
   );
