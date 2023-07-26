@@ -1,6 +1,7 @@
 package com.todo.app.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,19 @@ public class TodoService {
 
     public List<Todo> allTodos() {
         return this.todoRepository.findAll();
+    }
+
+    public Todo updateTodo(Todo newTodo, Integer id) {
+        Optional<Todo> optionalTarget = this.todoRepository.findById(id);
+        if (optionalTarget.isPresent()) {
+            Todo target = optionalTarget.get();
+            target.setTitle(newTodo.getTitle());
+            target.setEndAt(newTodo.getEndAt());
+            target.setCurrentStatus(newTodo.getCurrentStatus());
+            return this.save(target);
+        } else {
+            return null;
+        }
     }
 
     public Todo save(Todo todo) {
