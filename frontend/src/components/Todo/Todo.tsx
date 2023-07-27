@@ -8,6 +8,8 @@ import { TodoType, formattedDate, getTodayString } from "../../App";
 interface Props {
   todo: TodoType;
   updateTodo: Function;
+  progressTodo: Function;
+  deleteTodo: Function;
 }
 
 const statusNameList: { [key: number]: string } = {
@@ -37,14 +39,17 @@ const Todo: React.FC<Props> = (props) => {
   };
   const handleUpdateButton = (e: any) => {
     e.preventDefault();
-    console.log(todo);
+    props.updateTodo(todo);
   };
-  const handleProcessButton = (e: any) => {
+  const handleProcessButton = async (e: any) => {
     e.preventDefault();
+    props.progressTodo(todo);
     setTodo({ ...todo, currentStatus: Math.min(todo.currentStatus + 1, 2) });
   };
+
   const handleDeleteTodo = (e: any) => {
     e.preventDefault();
+    props.deleteTodo(todo);
     setTodo({ ...todo, deletedAt: getTodayString() });
   };
   registerLocale("ja", ja);
@@ -92,7 +97,7 @@ const Todo: React.FC<Props> = (props) => {
           <Button
             variant={getButtonClass(todo)}
             onClick={handleProcessButton}
-            disabled={todo.deletedAt !== null}
+            disabled={todo.deletedAt !== null || todo.currentStatus === 2}
           >
             {getStatusName(todo)}
           </Button>

@@ -22,6 +22,19 @@ export const formattedDate = (date: Date): string => {
   );
 };
 
+const formattedJsonDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  const ms = String(date.getMilliseconds()).padStart(3, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${ms}Z`;
+};
+
 export const getTodayString = (): string => {
   let today = new Date();
   return formattedDate(today);
@@ -34,51 +47,81 @@ export const emptyTodo: TodoType = {
   endAt: getTodayString(),
   deletedAt: null,
 };
-const todo1: TodoType = {
-  id: 1,
-  title: "Test1",
-  currentStatus: 0,
-  endAt: "2023/07/25",
-  deletedAt: null,
-};
-const todo2: TodoType = {
-  id: 2,
-  title: "Test2",
-  currentStatus: 0,
-  endAt: "2023/07/30",
-  deletedAt: "2023/07/20",
-};
-const todo3: TodoType = {
-  id: 3,
-  title: "Test3",
-  currentStatus: 0,
-  endAt: "2023/07/23",
-  deletedAt: null,
-};
+
+const url = "http://localhost:8080/api/todo";
 
 function App() {
   const [todoList, setTodoList] = useState<TodoType[]>([]);
   useEffect(() => {
-    setTodoList([todo1, todo2, todo3]);
+    fetchTodoList();
   }, []);
-  const addTodo = (todo: TodoType) => {
-    let maxId: number = 0;
-    todoList.forEach((todo: TodoType) => {
-      if (!maxId || todo.id > maxId) {
-        maxId = todo.id;
-      }
-    });
-    todoList.push(Object.assign({}, todo, { id: maxId + 1 }));
-    setTodoList([...todoList]);
+
+  const fetchTodoList = async () => {
+    const res: Response = await fetch(url, { method: "GET" });
+    if (res.ok) {
+      const data = (await res.json()) as TodoType[];
+      data.map((todo) => {
+        todo.endAt = formattedDate(new Date(todo.endAt));
+      });
+      setTodoList(data);
+      console.log("Fetched Todo List");
+    } else {
+      console.error("Unable to fetch todo list");
+    }
   };
-  const updateTodo = (todo: TodoType) => {
-    const tList = todoList.map((t) => (t.id === todo.id ? todo : t));
-    setTodoList(tList);
+
+  const addTodo = async (todo: TodoType) => {
+    todo.endAt = formattedJsonDate(todo.endAt);
+
+    await fetch(url + "/new", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    });
+    fetchTodoList();
+  };
+
+  const updateTodo = async (target: TodoType) => {
+    const todo: TodoType = {
+      ...target,
+      endAt: formattedJsonDate(target.endAt),
+    };
+    await fetch(url + `/${todo.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    });
+    fetchTodoList();
+  };
+
+  const progressTodo = async (target: TodoType) => {
+    const todo: TodoType = {
+      ...target,
+      endAt: formattedJsonDate(target.endAt),
+      currentStatus: Math.min(target.currentStatus + 1, 2),
+    };
+    await fetch(url + `/${todo.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(todo),
+    });
+    fetchTodoList();
+  };
+
+  const deleteTodo = async (target: TodoType) => {
+    await fetch(url + `/${target.id}`, { method: "DELETE" });
+    fetchTodoList();
   };
 
   return (
     <>
-      <Home todoList={todoList} addTodo={addTodo} updateTodo={updateTodo} />
+      <Home
+        todoList={todoList}
+        addTodo={addTodo}
+        updateTodo={updateTodo}
+        progressTodo={progressTodo}
+        deleteTodo={deleteTodo}
+      />
     </>
   );
 }
