@@ -100,7 +100,6 @@ function App() {
       endAt: formattedJsonDate(target.endAt),
       currentStatus: Math.min(target.currentStatus + 1, 2),
     };
-    console.log(todo);
     await fetch(url + `/${todo.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
