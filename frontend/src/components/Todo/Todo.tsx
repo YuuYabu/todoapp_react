@@ -108,7 +108,7 @@ const Todo: React.FC<Props> = (props) => {
             onClick={handleDeleteTodo}
             disabled={todo.deletedAt !== null}
           >
-            削除
+            非表示
           </Button>
         </div>
       </form>
