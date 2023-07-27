@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.todo.app.entity.Todo;
@@ -18,7 +20,7 @@ public class TodoService {
     }
 
     public List<Todo> allTodos() {
-        return this.todoRepository.findAll();
+        return this.todoRepository.findAll(Sort.by(Direction.ASC, "endAt"));
     }
 
     public Todo updateTodo(Todo newTodo, Integer id) {
