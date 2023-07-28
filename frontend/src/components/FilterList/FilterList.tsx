@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { FilterTypeContext } from "../Home/Home";
+import { FilterTypeContext } from "../TodoList/TodoList";
 import { Form } from "react-bootstrap";
 
 interface Props {

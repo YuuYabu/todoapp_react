@@ -1,24 +1,36 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import { TodoType } from "../../App";
 import Todo from "../Todo/Todo";
 import ReactPaginate from "react-paginate";
+import FilterList from "../FilterList/FilterList";
 
 interface Props {
   todoList: TodoType[];
   updateTodo: Function;
   progressTodo: Function;
   deleteTodo: Function;
-  filter: number;
 }
+
+export type FilterTypeContextType = {
+  filterType: number;
+  setFilterType: (filterType: number) => void;
+};
+
+export const FilterTypeContext = createContext<FilterTypeContextType>({
+  filterType: 0,
+  setFilterType: (filterType) => {},
+});
 
 const TodoList: React.FC<Props> = (props) => {
   const todoList = props.todoList;
+  const filter = 3;
+  const [filterType, setFilterType] = useState<number>(3);
   let filteredTodoList: TodoType[];
 
-  if (props.filter !== 4) {
+  if (filterType !== 4) {
     filteredTodoList = todoList
       .filter((todo) =>
-        props.filter === 3 ? true : todo.currentStatus === props.filter
+        filterType === 3 ? true : todo.currentStatus === filterType
       )
       .filter((todo) => todo.deletedAt === null);
   } else {
@@ -39,13 +51,16 @@ const TodoList: React.FC<Props> = (props) => {
   return (
     <>
       <h2>Todo List</h2>
+      <FilterTypeContext.Provider value={{ filterType, setFilterType }}>
+        <FilterList filter={filter}></FilterList>
+      </FilterTypeContext.Provider>
       <ReactPaginate
         pageCount={pageCount}
         onPageChange={handlePageClick}
-        nextLabel="next >"
+        nextLabel="次 >"
         pageRangeDisplayed={3}
         marginPagesDisplayed={2}
-        previousLabel="< previous"
+        previousLabel="< 前"
         pageClassName="page-item"
         pageLinkClassName="page-link"
         previousClassName="page-item"
