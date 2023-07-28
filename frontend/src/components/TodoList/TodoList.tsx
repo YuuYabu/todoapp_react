@@ -50,7 +50,7 @@ const TodoList: React.FC<Props> = (props) => {
 
   return (
     <>
-      <h2>Todo List</h2>
+      <h2>タスク一覧</h2>
       <FilterTypeContext.Provider value={{ filterType, setFilterType }}>
         <FilterList filter={filter}></FilterList>
       </FilterTypeContext.Provider>
