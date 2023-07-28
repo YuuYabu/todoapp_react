@@ -26,7 +26,6 @@ const Add: React.FC<Props> = (props) => {
   registerLocale("ja", ja);
   return (
     <>
-      <h2>New Todo</h2>
       <ul className="list-group list-group-flush">
         <li className="list-group-item">
           <form
