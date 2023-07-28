@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CookiesProvider } from "react-cookie";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -115,13 +116,15 @@ function App() {
 
   return (
     <>
-      <Home
-        todoList={todoList}
-        addTodo={addTodo}
-        updateTodo={updateTodo}
-        progressTodo={progressTodo}
-        deleteTodo={deleteTodo}
-      />
+      <CookiesProvider>
+        <Home
+          todoList={todoList}
+          addTodo={addTodo}
+          updateTodo={updateTodo}
+          progressTodo={progressTodo}
+          deleteTodo={deleteTodo}
+        />
+      </CookiesProvider>
     </>
   );
 }

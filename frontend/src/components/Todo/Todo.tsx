@@ -54,6 +54,57 @@ const Todo: React.FC<Props> = (props) => {
   };
   registerLocale("ja", ja);
 
+  const isPastDue = (selectedDate: Date): boolean => {
+    return selectedDate.getTime() < new Date().getTime();
+  };
+
+  const calculateLightBackgroundColor = (selectedDate: Date): string => {
+    if (isPastDue(selectedDate)) {
+      return "red";
+    } else {
+      const millisecondsPerDay = 24 * 60 * 60 * 1000;
+      const daysRemaining = Math.ceil(
+        (selectedDate.getTime() - new Date().getTime()) / millisecondsPerDay
+      );
+      const maxDays = 7;
+      const colorValue = Math.floor((255 / maxDays) * daysRemaining);
+      return `rgb(255, ${colorValue}, ${colorValue})`;
+    }
+  };
+
+  const calculateDarkBackgroundColor = (selectedDate: Date): string => {
+    if (isPastDue(selectedDate)) {
+      return "red";
+    } else {
+      const millisecondsPerDay = 24 * 60 * 60 * 1000;
+      const daysRemaining = Math.ceil(
+        (selectedDate.getTime() - new Date().getTime()) / millisecondsPerDay
+      );
+      const maxDays = 7;
+      const colorValue = Math.max(
+        255 - Math.floor((255 / maxDays) * Math.min(daysRemaining, maxDays)),
+        33
+      );
+      return `rgb(${colorValue}, 37, 41)`;
+    }
+  };
+
+  const setBackgroundColor = (
+    selectedDate: Date,
+    status: number,
+    deletedAt: string | null
+  ): string => {
+    if (status === 2 || deletedAt !== null) {
+      return "";
+    }
+    const theme = document.documentElement.getAttribute("data-bs-theme");
+    if (theme === "dark") {
+      return calculateDarkBackgroundColor(selectedDate);
+    } else {
+      return calculateLightBackgroundColor(selectedDate);
+    }
+  };
+
   return (
     <>
       <form className="row">
@@ -68,6 +119,11 @@ const Todo: React.FC<Props> = (props) => {
             required={true}
             style={{
               textDecoration: todo.currentStatus === 2 ? "line-through" : "",
+              backgroundColor: setBackgroundColor(
+                new Date(todo.endAt),
+                todo.currentStatus,
+                todo.deletedAt
+              ),
             }}
           />
         </div>
